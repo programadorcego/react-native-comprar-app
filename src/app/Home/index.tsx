@@ -6,11 +6,15 @@ import { Input } from "@/components/Input";
 export function Home() {
     return (
         <View style={styles.container}>
-            <Input placeholder="O que deseja comprar?" />
-
             <Image source={require("@/assets/logo.png")} style={styles.logo} />
-            
-            <Button title="Entrar" />
+
+            <View style={styles.form}>
+                <Input placeholder="O que precisa comprar?" />
+
+                <Button title="Entrar" />
+            </View>
+
+            <View style={styles.content}></View>
         </View>
     );
 }
