@@ -1,6 +1,7 @@
 import { FilterStatus } from "@/types/FilterStatus";
 import { Pressable, PressableProps, Text } from "react-native";
 import { styles } from "./styles";
+import { StatusIcon } from "../StatusIcon";
 
 type FilterProps = PressableProps & {
     status: FilterStatus,
@@ -16,6 +17,7 @@ export function Filter({ status, isActive, ...rest }: FilterProps) {
         >
             <Text style={styles.title}>
                 {status === FilterStatus.DONE ? "Comprados" : "Pendentes"}
+                <StatusIcon status={status} />
             </Text>
         </Pressable>
     );
