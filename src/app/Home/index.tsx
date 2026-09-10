@@ -5,6 +5,7 @@ import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
+import { useState } from "react";
 
 const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
 
@@ -29,12 +30,14 @@ const items = [
 ];
 
 export function Home() {
+    const [filter, setFilter] = useState(FilterStatus.PENDING);
+    const [description, setDescription] = useState("");
     return (
         <View style={styles.container}>
             <Image source={require("@/assets/logo.png")} style={styles.logo} />
 
             <View style={styles.form}>
-                <Input placeholder="O que precisa comprar?" />
+                <Input placeholder="O que precisa comprar?" onChangeText={setDescription} />
 
                 <Button title="Entrar" />
             </View>
@@ -42,7 +45,7 @@ export function Home() {
             <View style={styles.content}>
                 <View style={styles.header}>
                     {FILTER_STATUS.map(status => (
-                        <Filter key={status} status={status} isActive />
+                        <Filter key={status} status={status} isActive={filter === status} />
                     ))}
 
                     <Pressable style={styles.clearButton} accessibilityRole="button">
