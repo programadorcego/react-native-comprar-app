@@ -25,7 +25,25 @@ async function getByStatus(status: FilterStatus): Promise<ItemStorage[]> {
     return items.filter(item => item.status === status);
 }
 
+async function save(items: ItemStorage[]): Promise<void> {
+    try {
+        await AsyncStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(items));
+    } catch(err) {
+        throw new Error(`ITEMS_SAVE: ${err}`);
+    }
+}
+
+async function add(item: ItemStorage): Promise<ItemStorage[]> {
+    const items = await get();
+    const updatedItems = [...items, item];
+
+    await save(updatedItems);
+
+    return updatedItems;
+}
+
 export const itemsStorage = {
     get,
     getByStatus,
+    add,
 };
