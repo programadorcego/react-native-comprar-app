@@ -1,37 +1,35 @@
-import { FlatList, Image, Pressable, Text, View } from "react-native";
+import { Alert, FlatList, Image, Pressable, Text, View } from "react-native";
 import { styles } from "./styles";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
 
 const FILTER_STATUS = [FilterStatus.DONE, FilterStatus.PENDING];
 
-const items = [
-    {
-        id: "1",
-        status: FilterStatus.DONE,
-        description: "1 Pacote de Café"
-    },
-
-    {
-        id: "2",
-        status: FilterStatus.PENDING,
-        description: "2 Pacotes de Macarrão"
-    },
-
-    {
-        id: "3",
-        status: FilterStatus.PENDING,
-        description: "3 Pacotes de Bolacha"
-    },
-];
-
 export function Home() {
+    const [items, setItems] = useState<ItemStorage[]>([]);
     const [filter, setFilter] = useState(FilterStatus.PENDING);
     const [description, setDescription] = useState("");
+
+    async function itemsByStatus() {
+        try {
+            const response = await itemsStorage.getByStatus(filter);
+            setItems(response);
+        } catch (err) {
+            console.error(err);
+
+            Alert.alert("Erro", "Erro ao filtrar");
+        }
+    }
+
+    useEffect(() => {
+        itemsByStatus();
+    }, [filter]);
+
     return (
         <View style={styles.container}>
             <Image source={require("@/assets/logo.png")} style={styles.logo} />
@@ -45,7 +43,7 @@ export function Home() {
             <View style={styles.content}>
                 <View style={styles.header}>
                     {FILTER_STATUS.map(status => (
-                        <Filter key={status} status={status} isActive={filter === status} />
+                        <Filter key={status} status={status} isActive={filter === status} onPress={() => setFilter(status)} />
                     ))}
 
                     <Pressable style={styles.clearButton} accessibilityRole="button">
