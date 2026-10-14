@@ -26,6 +26,24 @@ export function Home() {
         }
     }
 
+    async function handleAdd() {
+        if (!description.trim()) {
+            return Alert.alert("Adicionar", "O campo não deve estar vazio!");
+        }
+
+        const newItem = {
+            id: Math.random().toString().substr(2),
+            description,
+            status: FilterStatus.PENDING,
+        };
+
+        await itemsStorage.add(newItem);
+        await itemsByStatus();
+
+        setDescription("");
+        setFilter(FilterStatus.PENDING);
+    }
+
     useEffect(() => {
         itemsByStatus();
     }, [filter]);
@@ -35,9 +53,9 @@ export function Home() {
             <Image source={require("@/assets/logo.png")} style={styles.logo} />
 
             <View style={styles.form}>
-                <Input placeholder="O que precisa comprar?" onChangeText={setDescription} />
+                <Input placeholder="O que precisa comprar?" onChangeText={setDescription} value={description} />
 
-                <Button title="Entrar" />
+                <Button title="Adicionar" onPress={handleAdd} />
             </View>
 
             <View style={styles.content}>
