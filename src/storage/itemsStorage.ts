@@ -14,7 +14,7 @@ async function get(): Promise<ItemStorage[]> {
         const storage = await AsyncStorage.getItem(ITEMS_STORAGE_KEY);
 
         return storage ? JSON.parse(storage) : [];
-    } catch(err) {
+    } catch (err) {
         throw new Error(`GET_ITEMS: ${err}`);
     }
 }
@@ -28,7 +28,7 @@ async function getByStatus(status: FilterStatus): Promise<ItemStorage[]> {
 async function save(items: ItemStorage[]): Promise<void> {
     try {
         await AsyncStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(items));
-    } catch(err) {
+    } catch (err) {
         throw new Error(`ITEMS_SAVE: ${err}`);
     }
 }
@@ -52,9 +52,22 @@ async function remove(id: string): Promise<void> {
 async function clear(): Promise<void> {
     try {
         await AsyncStorage.removeItem(ITEMS_STORAGE_KEY);
-    } catch(err) {
+    } catch (err) {
         throw new Error(`ITEMS_CLEAR: ${err}`);
     }
+}
+
+async function toggleStatus(id: string): Promise<void> {
+    const items = await get();
+
+    const updatedStorage = items.map(item =>
+        item.id === id ? {
+            ...item,
+            status: item.status === FilterStatus.PENDING ? FilterStatus.DONE : FilterStatus.PENDING
+        } : item
+    );
+
+    await save(updatedStorage)
 }
 
 export const itemsStorage = {
@@ -62,5 +75,6 @@ export const itemsStorage = {
     getByStatus,
     add,
     remove,
+    toggleStatus,
     clear,
 };
